@@ -88,11 +88,7 @@ const initModal = (chainId: number, chainType: number): void => {
 
     // 3. Create modal
     modal = createAppKit({
-      adapters: [
-        ...(targetNetworkData ? [new EthersAdapter()] : []),
-        ...(sol ? [solanaWeb3JsAdapter] : []),
-        ...(btc ? [bitcoinAdapter] : []),
-      ],
+      adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
       networks: [
         ...(targetNetworkData ? [targetNetworkData] : []),
         ...(sol ? [sol] : []),
@@ -215,9 +211,9 @@ const reownInit = (chainId: number, chainType: number): void => {
     if (isChainTypeChanged) {
       modal?.disconnect();
     }
-    if (!modal || isChainTypeChanged) {
+    if (!modal) {
       initModal(chainId, chainType);
-    } else if (chainId !== currentChainId) {
+    } else if (isChainTypeChanged || chainId !== currentChainId) {
       const targetNetworkData = returnNetworkByChainType(chainType, chainId);
 
       addNewChain(chainType, targetNetworkData);

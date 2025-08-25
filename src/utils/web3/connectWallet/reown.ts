@@ -16,7 +16,7 @@ export const getReownWeb = async (chainType: number) => {
   try {
     await reownModal?.disconnect();
 
-    // console.log("getReownChainName(chainType)", getReownChainName(chainType));
+    console.log("getReownChainName(chainType)", getReownChainName(chainType));
     await reownModal?.open({
       view: "Connect",
       namespace: getReownChainName(chainType),

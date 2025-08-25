@@ -21,7 +21,8 @@
 	};
 
 	const openReownModal = async()=>{
-
+        console.log("openReownModal");
+        console.log("currChainType", currChainType);
 		await getReownWeb(currChainType);
 	}
 
@@ -43,7 +44,7 @@
             Init reown wallet with solana
         </button>
 
-        <button class="modal-btn" onclick={()=>{openReownModal}}>
+        <button class="modal-btn" onclick={()=>{openReownModal()}}>
             Reown modal display
         </button>
 
