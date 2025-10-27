@@ -1,39 +1,39 @@
 {
-	"name": "demoproj",
-	"private": true,
-	"version": "0.0.1",
-	"type": "module",
-	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
-	},
-	"devDependencies": {
-		"@fontsource/fira-mono": "^5.0.0",
-		"@neoconfetti/svelte": "^2.0.0",
-		"@sveltejs/adapter-auto": "^6.0.0",
-		"@sveltejs/kit": "^2.22.0",
-		"@sveltejs/vite-plugin-svelte": "^6.0.0",
-		"rollup-plugin-polyfill-node": "^0.13.0",
-		"svelte": "^5.25.0",
-		"svelte-check": "^4.0.0",
-		"typescript": "^5.0.0",
-		"vite": "^7.0.4"
-	},
-	"dependencies": {
-		"@reown/appkit": "^1.7.19",
-		"@reown/appkit-adapter-bitcoin": "^1.7.19",
-		"@reown/appkit-adapter-ethers": "^1.7.19",
-		"@reown/appkit-adapter-solana": "^1.7.19",
-		"@reown/appkit-wallet-button": "^1.7.19",
-		"@rollup/plugin-inject": "^5.0.5",
-		"@solana/wallet-adapter-wallets": "^0.19.37",
-		"buffer": "^6.0.3",
-		"ethers": "^6.15.0",
-		"react": "^19.1.1",
-		"react-dom": "^19.1.1"
-	}
+  "name": "demoproj",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "prepare": "svelte-kit sync || echo ''",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@fontsource/fira-mono": "^5.0.0",
+    "@neoconfetti/svelte": "^2.0.0",
+    "@sveltejs/adapter-auto": "^6.0.0",
+    "@sveltejs/kit": "^2.22.0",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "svelte": "^5.25.0",
+    "svelte-check": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^7.0.4"
+  },
+  "dependencies": {
+		"@reown/appkit": "^1.8.11",
+    "@reown/appkit-adapter-bitcoin": "^1.8.11",
+    "@reown/appkit-adapter-ethers": "^1.8.11",
+    "@reown/appkit-adapter-solana": "^1.8.11",
+    "@reown/appkit-wallet-button": "^1.8.11",
+    "@rollup/plugin-inject": "^5.0.5",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "buffer": "^6.0.3",
+    "ethers": "^6.15.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  }
 }

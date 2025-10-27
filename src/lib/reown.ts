@@ -12,6 +12,7 @@ import {
   LedgerWalletAdapter,
   TrustWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
+import { mainnet, arbitrum } from '@reown/appkit/networks'
 
 import { setWalletStatus } from "@store/actions/walletStatus";
 
@@ -88,12 +89,15 @@ const initModal = (chainId: number, chainType: number): void => {
 
     // 3. Create modal
     modal = createAppKit({
-      adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
-      networks: [
-        ...(targetNetworkData ? [targetNetworkData] : []),
-        ...(sol ? [sol] : []),
-        ...(btc ? [btc] : []),
-      ],
+      // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
+      adapters: [new EthersAdapter()],
+      // networks: [
+      //   ...(targetNetworkData ? [targetNetworkData] : []),
+      //   ...(sol ? [sol] : []),
+      //   ...(btc ? [btc] : []),
+      // ],
+
+      networks: [mainnet],
       metadata: metadata,
       projectId,
       features: {
