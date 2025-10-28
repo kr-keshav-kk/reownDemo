@@ -6,13 +6,14 @@ import { solana, bitcoin } from "@reown/appkit/networks";
 import { BitcoinAdapter } from "@reown/appkit-adapter-bitcoin";
 import { EthersAdapter } from "@reown/appkit-adapter-ethers";
 import { createAppKitWalletButton } from "@reown/appkit-wallet-button";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
   LedgerWalletAdapter,
   TrustWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import { mainnet, arbitrum } from '@reown/appkit/networks'
+import { mainnet, arbitrum } from "@reown/appkit/networks";
 
 import { setWalletStatus } from "@store/actions/walletStatus";
 
@@ -87,10 +88,15 @@ const initModal = (chainId: number, chainType: number): void => {
       icons: ["https://onramp.money/assets/favicon.png"],
     };
 
+    const wagmiAdapter = new WagmiAdapter({
+      projectId,
+      networks: [mainnet],
+    });
+
     // 3. Create modal
     modal = createAppKit({
       // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
-      adapters: [new EthersAdapter()],
+      adapters: [wagmiAdapter],
       // networks: [
       //   ...(targetNetworkData ? [targetNetworkData] : []),
       //   ...(sol ? [sol] : []),
@@ -126,6 +132,7 @@ const initModal = (chainId: number, chainType: number): void => {
 // Initialize the network store
 const initNetworkCoreStore = (): void => {
   unsubActiveCaipNetwork = modal?.subscribeNetwork((network) => {
+    console.log("network", network);
     setWalletStatus({
       caipNetwork: network?.caipNetwork,
       caipNetworkId: network?.caipNetworkId,

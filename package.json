@@ -24,10 +24,11 @@
     "vite": "^7.0.4"
   },
   "dependencies": {
-		"@reown/appkit": "^1.8.11",
+    "@reown/appkit": "^1.8.11",
     "@reown/appkit-adapter-bitcoin": "^1.8.11",
     "@reown/appkit-adapter-ethers": "^1.8.11",
     "@reown/appkit-adapter-solana": "^1.8.11",
+    "@reown/appkit-adapter-wagmi": "^1.8.12",
     "@reown/appkit-wallet-button": "^1.8.11",
     "@rollup/plugin-inject": "^5.0.5",
     "@solana/wallet-adapter-wallets": "^0.19.37",

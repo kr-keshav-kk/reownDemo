@@ -61,7 +61,9 @@
         </button>
     </div>
 	
-	wallet address: {$walletStatus.signerAddress}
+	wallet address: {$walletStatus.signerAddress}<br>
+    chain: {$walletStatus.chainData?.chain}<br>
+    chain id: {$walletStatus.chainData?.chainId}<br>
 
 </section>
 
