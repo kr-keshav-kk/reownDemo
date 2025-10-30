@@ -90,20 +90,20 @@ const initModal = (chainId: number, chainType: number): void => {
 
     const wagmiAdapter = new WagmiAdapter({
       projectId,
-      networks: [mainnet],
+      networks: [targetNetworkData],
     });
 
     // 3. Create modal
     modal = createAppKit({
       // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
       adapters: [wagmiAdapter],
-      // networks: [
-      //   ...(targetNetworkData ? [targetNetworkData] : []),
-      //   ...(sol ? [sol] : []),
-      //   ...(btc ? [btc] : []),
-      // ],
+      networks: [
+        ...(targetNetworkData ? [targetNetworkData] : []),
+        ...(sol ? [sol] : []),
+        ...(btc ? [btc] : []),
+      ],
 
-      networks: [mainnet],
+      // networks: [mainnet],
       metadata: metadata,
       projectId,
       features: {
@@ -114,6 +114,7 @@ const initModal = (chainId: number, chainType: number): void => {
         swaps: false,
       },
       enableWalletConnect: true, // disables QR code
+
     });
 
     if (walletType === "evm") {
@@ -146,6 +147,10 @@ const initNetworkCoreStore = (): void => {
         title: network?.caipNetwork?.name,
       },
     });
+    const isSupportedNetwork = network?.chainId === currentChainId;
+    if (isSupportedNetwork) {
+      modal?.close();
+    }
   });
 };
 

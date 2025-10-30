@@ -37,7 +37,11 @@
 <section>
     <div class="wallet-controls">
         <button class="init-btn" onclick={()=>{connectWalletInit(56,0)}}>
-            Init reown wallet with evm
+            Init reown wallet with evm(bnb)
+        </button>
+
+           <button class="init-btn" onclick={()=>{connectWalletInit(137,0)}}>
+            Init reown wallet with evm(matic20)
         </button>
 
         <button class="init-btn" onclick={()=>{connectWalletInit(-1,4)}}>
