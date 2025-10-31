@@ -49,7 +49,7 @@ const decideWalletType = (chainType: number): string | null => {
   return null;
 };
 
-const initModal = (chainId: number, chainType: number): void => {
+const initModal = async (chainId: number, chainType: number): Promise<void> => {
   try {
     currentChainId = chainId;
     prevChainType = chainType;
@@ -92,7 +92,7 @@ const initModal = (chainId: number, chainType: number): void => {
       projectId,
       networks: [targetNetworkData],
     });
-
+    console.log("targetNetwork", targetNetworkData);
     // 3. Create modal
     modal = createAppKit({
       // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
@@ -114,7 +114,6 @@ const initModal = (chainId: number, chainType: number): void => {
         swaps: false,
       },
       enableWalletConnect: true, // disables QR code
-
     });
 
     if (walletType === "evm") {
@@ -122,6 +121,8 @@ const initModal = (chainId: number, chainType: number): void => {
     } else if (walletType === "sol") {
       walletButton = createAppKitWalletButton({ namespace: "solana" });
     }
+
+    await modal.ready();
     // else if (walletType === 'btc') {
     // 	walletButton = createAppKitWalletButton({ namespace: 'bip122' });
     // }
@@ -132,6 +133,16 @@ const initModal = (chainId: number, chainType: number): void => {
 
 // Initialize the network store
 const initNetworkCoreStore = (): void => {
+  modal?.subscribeEvents(({ data }) => {
+    if (data.event === "MODAL_CLOSE") {
+      const network = modal?.getCaipNetwork();
+
+      if (network?.name === "Unknown Network") {
+        modal?.open({ view: "Networks" });
+      }
+    }
+  });
+
   unsubActiveCaipNetwork = modal?.subscribeNetwork((network) => {
     console.log("network", network);
     setWalletStatus({
@@ -147,10 +158,16 @@ const initNetworkCoreStore = (): void => {
         title: network?.caipNetwork?.name,
       },
     });
-    const isSupportedNetwork = network?.chainId === currentChainId;
+    const isSupportedNetwork =
+      network?.chainId?.toString() === currentChainId.toString();
     if (isSupportedNetwork) {
       modal?.close();
     }
+
+    // if (network?.caipNetwork?.name === "Unknown Network") {
+    //   const targetNetworkData = returnNetworkByChainType(0, currentChainId);
+    //   modal?.switchNetwork(targetNetworkData);
+    // }
   });
 };
 
@@ -220,7 +237,7 @@ const returnNetworkByChainType = (
   }
 };
 
-const reownInit = (chainId: number, chainType: number): void => {
+const reownInit = async (chainId: number, chainType: number): void => {
   try {
     console.log("chainid", chainId, chainType);
     const isChainTypeChanged = chainType !== prevChainType;
@@ -228,7 +245,7 @@ const reownInit = (chainId: number, chainType: number): void => {
       modal?.disconnect();
     }
     if (!modal) {
-      initModal(chainId, chainType);
+      await initModal(chainId, chainType);
     } else if (isChainTypeChanged || chainId !== currentChainId) {
       const targetNetworkData = returnNetworkByChainType(chainType, chainId);
 

@@ -17,7 +17,7 @@
 			unsubscribeReown();
 		}
 
-		reownInit(chainId, chainType);		
+		await reownInit(chainId, chainType);		
 	};
 
 	const openReownModal = async()=>{
