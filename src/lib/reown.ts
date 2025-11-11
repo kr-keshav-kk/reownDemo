@@ -49,6 +49,45 @@ const decideWalletType = (chainType: number): string | null => {
   return null;
 };
 
+const projectId = PUBLIC_WALLET_CONNECT_ID;
+
+// 2. Create a metadata object - optional
+const metadata = {
+  name: "Onramp Money",
+  description: "",
+  url: "https://onramp.money", // origin must match your domain & subdomain
+  icons: ["https://onramp.money/assets/favicon.png"],
+};
+
+const targetNetworks = [bsc, polygon];
+
+// const allChainsArray = Object.values(allChains);
+const wagmiAdapter = new WagmiAdapter({
+  projectId,
+  networks: targetNetworks,
+});
+
+// 3. Create modal
+// Modal should never be re-initialized
+modal = createAppKit({
+  // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
+  adapters: [wagmiAdapter],
+  networks: [...targetNetworks],
+
+  // networks: [mainnet],
+  metadata: metadata,
+  projectId,
+  features: {
+    analytics: true, // Optional - defaults to your Cloud configuration
+    socials: false,
+    email: false,
+    onramp: false,
+    swaps: false,
+  },
+  enableReconnect: false,
+  enableWalletConnect: true, // disables QR code
+});
+
 const initModal = async (chainId: number, chainType: number): Promise<void> => {
   try {
     currentChainId = chainId;
@@ -59,64 +98,7 @@ const initModal = async (chainId: number, chainType: number): Promise<void> => {
     if (walletType === "evm") {
       targetNetworkData = getChainDataByChainId(chainId);
       modifyRpcUrl(targetNetworkData);
-    } else if (walletType === "sol") {
-      sol = solana;
-    } else if (walletType === "btc") {
-      btc = bitcoin;
     }
-
-    const projectId = PUBLIC_WALLET_CONNECT_ID;
-
-    const solanaWeb3JsAdapter = new SolanaAdapter({
-      wallets: [
-        new PhantomWalletAdapter(),
-        new SolflareWalletAdapter(),
-        new LedgerWalletAdapter(),
-        new TrustWalletAdapter(),
-      ],
-    });
-
-    const bitcoinAdapter = new BitcoinAdapter({
-      projectId,
-    });
-
-    // 2. Create a metadata object - optional
-    const metadata = {
-      name: "Onramp Money",
-      description: "",
-      url: "https://onramp.money", // origin must match your domain & subdomain
-      icons: ["https://onramp.money/assets/favicon.png"],
-    };
-
-    const targetNetworks = [bsc, polygon];
-    // const allChainsArray = Object.values(allChains);
-    const wagmiAdapter = new WagmiAdapter({
-      projectId,
-      networks: targetNetworks,
-    });
-    console.log("targetNetwork", targetNetworkData);
-    // 3. Create modal
-    modal = createAppKit({
-      // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
-      adapters: [wagmiAdapter],
-      networks: [
-        ...targetNetworks,
-        ...(sol ? [sol] : []),
-        ...(btc ? [btc] : []),
-      ],
-
-      // networks: [mainnet],
-      metadata: metadata,
-      projectId,
-      features: {
-        analytics: true, // Optional - defaults to your Cloud configuration
-        socials: false,
-        email: false,
-        onramp: false,
-        swaps: false,
-      },
-      enableWalletConnect: true, // disables QR code
-    });
 
     if (walletType === "evm") {
       walletButton = createAppKitWalletButton({ namespace: "eip155" });
@@ -127,12 +109,14 @@ const initModal = async (chainId: number, chainType: number): Promise<void> => {
     if (targetNetworkData) {
       if (targetNetworkData.id === polygon.id) {
         modal?.removeNetwork("eip155", bsc.id);
+        await modal?.switchNetwork(polygon);
       }
       if (targetNetworkData.id === bsc.id) {
         modal?.removeNetwork("eip155", polygon.id);
+        await modal?.switchNetwork(bsc);
       }
     }
-    await modal.ready();
+
     // else if (walletType === 'btc') {
     // 	walletButton = createAppKitWalletButton({ namespace: 'bip122' });
     // }
@@ -244,21 +228,7 @@ const reownInit = async (chainId: number, chainType: number): void => {
     if (isChainTypeChanged) {
       modal?.disconnect();
     }
-    if (!modal) {
-      await initModal(chainId, chainType);
-    } else if (isChainTypeChanged || chainId !== currentChainId) {
-      const targetNetworkData = returnNetworkByChainType(chainType, chainId);
-
-      addNewChain(chainType, targetNetworkData);
-      modal?.switchNetwork(targetNetworkData);
-
-      if (prevChainType) {
-        removeOldChain(prevChainType);
-      }
-
-      prevChainType = chainType;
-      currentChainId = chainId;
-    }
+    await initModal(chainId, chainType);
 
     initNetworkCoreStore();
     initProviderStore();
