@@ -13,7 +13,7 @@ import {
   LedgerWalletAdapter,
   TrustWalletAdapter,
 } from "@solana/wallet-adapter-wallets";
-import { mainnet, arbitrum } from "@reown/appkit/networks";
+import { mainnet, arbitrum, bsc, polygon } from "@reown/appkit/networks";
 
 import { setWalletStatus } from "@store/actions/walletStatus";
 
@@ -88,9 +88,11 @@ const initModal = async (chainId: number, chainType: number): Promise<void> => {
       icons: ["https://onramp.money/assets/favicon.png"],
     };
 
+    const targetNetworks = [bsc, polygon];
+    // const allChainsArray = Object.values(allChains);
     const wagmiAdapter = new WagmiAdapter({
       projectId,
-      networks: [targetNetworkData],
+      networks: targetNetworks,
     });
     console.log("targetNetwork", targetNetworkData);
     // 3. Create modal
@@ -98,7 +100,7 @@ const initModal = async (chainId: number, chainType: number): Promise<void> => {
       // adapters: [new EthersAdapter(), solanaWeb3JsAdapter, bitcoinAdapter],
       adapters: [wagmiAdapter],
       networks: [
-        ...(targetNetworkData ? [targetNetworkData] : []),
+        ...targetNetworks,
         ...(sol ? [sol] : []),
         ...(btc ? [btc] : []),
       ],
@@ -122,6 +124,14 @@ const initModal = async (chainId: number, chainType: number): Promise<void> => {
       walletButton = createAppKitWalletButton({ namespace: "solana" });
     }
 
+    if (targetNetworkData) {
+      if (targetNetworkData.id === polygon.id) {
+        modal?.removeNetwork("eip155", bsc.id);
+      }
+      if (targetNetworkData.id === bsc.id) {
+        modal?.removeNetwork("eip155", polygon.id);
+      }
+    }
     await modal.ready();
     // else if (walletType === 'btc') {
     // 	walletButton = createAppKitWalletButton({ namespace: 'bip122' });
@@ -133,16 +143,6 @@ const initModal = async (chainId: number, chainType: number): Promise<void> => {
 
 // Initialize the network store
 const initNetworkCoreStore = (): void => {
-  modal?.subscribeEvents(({ data }) => {
-    if (data.event === "MODAL_CLOSE") {
-      const network = modal?.getCaipNetwork();
-
-      if (network?.name === "Unknown Network") {
-        modal?.open({ view: "Networks" });
-      }
-    }
-  });
-
   unsubActiveCaipNetwork = modal?.subscribeNetwork((network) => {
     console.log("network", network);
     setWalletStatus({
